@@ -8,5 +8,10 @@ export default{
   removeOneContent(state,content){
     state.contentItem = state.contentItem.filter(item=>item.content!==content.content)
     state.count = state.contentItem.length
+  },
+  checkedContent(state,content){
+    state.contentItem.forEach(element => {
+      element.state =! element.state
+    });
   }
 }

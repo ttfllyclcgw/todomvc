@@ -4,5 +4,8 @@ export default{
   },
   syncRemoveOneContent(context,content){
     context.commit('removeOneContent',content)
+  },
+  syncCheckedContent(context,content){
+    context.commit('checkedContent',content)
   }
 }

@@ -4,7 +4,7 @@
     <h1>{{ msg }}</h1>
     <!-- 1.文本框 -->
     <div class="todo-new">
-      <label class="todo-checkall" v-show="countShow">ⱴ</label>
+      <label class="todo-checkall" v-show="countShow" @click="checkedAll()">ⱴ</label>
       <input placeholder="What needs to be done?" v-model.trim="strValue"
         class="new-todo" @keyup.enter="newContent({content:strValue,isExpand:false});
                                       resetStrValue();contentShow()" />
@@ -57,7 +57,8 @@ export default {
   },
   methods:{
     ...mapActions({
-      newContent: 'syncNewContentItem'
+      newContent: 'syncNewContentItem',
+      checkedAll:'syncCheckedContent'
     }),
     resetStrValue(){
       this.strValue = '';
@@ -70,12 +71,13 @@ export default {
       }else{
         this.countShow = false
       }
-    }
+    },
+
   }
 }
 </script>
 
-<style scoped>
+<style>
 .todoapp h1{
   position: absolute;
   top: -5vh;
@@ -194,6 +196,51 @@ input::-webkit-input-placeholder{
 }
 .clear-completed:hover{
   text-decoration: underline;
+}
+
+.todo-list{
+  padding: 16px 16px 16px 60px;
+  background: rgba(0, 0, 0, 0.003);
+  box-shadow: inset 0 -2px 1px rgba(0,0,0,0.03);
+  position: relative;
+  margin: 0;
+  width: 32vw;
+  font-size: 24px;
+  font-family: inherit;
+  font-weight: inherit;
+  line-height: 1.4em;
+  color: inherit;
+  padding: 6px;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  background: white;
+  padding-left: 3vw;
+  padding-right: 1.3vw;
+  margin-left: 33.5vw;
+  margin-top: -0.1vw;
+  border: 1px solid #ededed;
+}
+.checked-item{
+  width: 20px;
+  height: 15px;
+  cursor: pointer;
+  position: absolute;
+  top: 0.8vw;
+  left: 10px;
+}
+.list-item{
+  word-break: break-all;
+  word-wrap: break-word;
+}
+.remove-item{
+  color:#cc9a9a;
+  border: none;
+  font-size: 24px;
+  background: white;
+  cursor: pointer;
+  position: absolute;
+  left: 90%;
+  top: 1.5vh;
 }
 </style>
 
