@@ -4,24 +4,24 @@
     <h1>{{ msg }}</h1>
     <!-- 1.文本框 -->
     <div class="todo-new">
-      <label class="todo-checkall">ⱴ</label>
+      <label class="todo-checkall" v-show="countShow">ⱴ</label>
       <input placeholder="What needs to be done?" v-model.trim="strValue"
         class="new-todo" @keyup.enter="newContent({content:strValue,isExpand:false});
-                                      clearValue()" />
+                                      resetStrValue();contentShow()" />
     </div>
     <!-- 2.生成内容区 -->
     <div class="todo-main">
         <router-view></router-view>
     </div>
     <!-- 3.操作区 -->
-    <div class="todo-operation">
-      <span class="operation-item"><strong>1</strong> item left</span>
+    <div class="todo-operation" v-show="countShow">
+      <span class="operation-item"><strong ref="contentCount">{{contentCount}}</strong> item left</span>
       <ul class="operation-ul">
           <li><router-link to="/all">All</router-link></li>
           <li><router-link to="/active">Active</router-link></li>
           <li><router-link to="/completed">Completed</router-link></li>
       </ul>
-      <button class="clear-completed">Clear completed</button>
+      <button class="clear-completed" v-show="clearShow">Clear completed</button>
     </div>
     <!-- 4.底部文案区 -->
     <div class="todo-info">
@@ -33,24 +33,43 @@
 </template>
 
 <script>
-import {mapActions} from 'vuex'
+import {mapGetters,mapActions} from 'vuex'
 export default {
   data(){
     return{
       msg: 'todos',
-      strValue:''
+      strValue:'',
+      clearShow:false,
+      countShow:false,
     }
   },
   //默认打开显示全部
   mounted(){
     this.$router.push('/all')
   },
+  created(){
+
+  },
+  computed:{
+    ...mapGetters({
+      contentCount: 'getContentCount'
+    })
+  },
   methods:{
     ...mapActions({
       newContent: 'syncNewContentItem'
     }),
-    clearValue(){
+    resetStrValue(){
       this.strValue = '';
+    },
+    //显示导航栏
+    contentShow(){
+      let contentCount = this.$store.state.count;
+      if(contentCount>0){
+        this.countShow = true
+      }else{
+        this.countShow = false
+      }
     }
   }
 }

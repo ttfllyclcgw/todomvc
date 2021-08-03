@@ -1,9 +1,10 @@
 <template>
   <div>
     <div class="todo-list" v-for="(item,index) in contentItem" :key="index">
-      <input type="checkbox" class="checked-item" :checked="item.isExpand" @click.native="item.isExpand!=item.isExpand" />
+      <input type="checkbox" class="checked-item" :checked="item.isExpand" @click="item.isExpand!=item.isExpand" />
       <label class="list-item">{{item.content}}</label>
-      <button class="remove-item" @click="removeTargetContent({content:item.content})">×</button>
+      <button class="remove-item" @click="removeTargetContent({content:item.content});
+                                          contentShow()">×</button>
     </div>
   </div>
 </template>
@@ -24,7 +25,11 @@ export default {
   methods:{
     ...mapActions({
       removeTargetContent: 'syncRemoveOneContent'
-    })
+    }),
+    contentShow(){
+      this.$parent.contentShow();
+    },
+
   }
 }
 </script>
@@ -37,7 +42,6 @@ export default {
   position: relative;
   margin: 0;
   width: 32vw;
-  height: 7vh;
   font-size: 24px;
   font-family: inherit;
   font-weight: inherit;
@@ -58,13 +62,12 @@ export default {
   height: 15px;
   cursor: pointer;
   position: absolute;
-  top: 1vw;
-  left: 15px;
+  top: 0.8vw;
+  left: 10px;
 }
-label{
-  position: absolute;
-  left: 10%;
-  top: 1.2vh;
+.list-item{
+  word-break: break-all;
+  word-wrap: break-word;
 }
 .remove-item{
   color:#cc9a9a;
