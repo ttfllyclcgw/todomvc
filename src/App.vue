@@ -4,10 +4,10 @@
     <h1>{{ msg }}</h1>
     <!-- 1.文本框 -->
     <div class="todo-new">
-      <label class="todo-checkall" v-show="countShow" @click="checkedAll()">ⱴ</label>
+      <label class="todo-checkall" v-show="countShow" @click="allContent()">ⱴ</label>
       <input placeholder="What needs to be done?" v-model.trim="strValue"
         class="new-todo" @keyup.enter="newContent({content:strValue,isExpand:false});
-                                      resetStrValue();contentShow()" />
+                                      resetStrValue();contentShow();getContentCount()" />
     </div>
     <!-- 2.生成内容区 -->
     <div class="todo-main">
@@ -15,13 +15,13 @@
     </div>
     <!-- 3.操作区 -->
     <div class="todo-operation" v-show="countShow">
-      <span class="operation-item"><strong ref="contentCount">{{contentCount}}</strong> item left</span>
+      <span class="operation-item"><strong ref="contentCount">{{count}}</strong> item left</span>
       <ul class="operation-ul">
-          <li><router-link to="/all">All</router-link></li>
-          <li><router-link to="/active">Active</router-link></li>
-          <li><router-link to="/completed">Completed</router-link></li>
+          <li><router-link to="/all" >All</router-link></li>
+          <li><router-link to="/active" >Active</router-link></li>
+          <li><router-link to="/completed" >Completed</router-link></li>
       </ul>
-      <button class="clear-completed" v-show="clearShow">Clear completed</button>
+      <button class="clear-completed" v-show="clearShow" @click="">Clear completed</button>
     </div>
     <!-- 4.底部文案区 -->
     <div class="todo-info">
@@ -41,6 +41,7 @@ export default {
       strValue:'',
       clearShow:false,
       countShow:false,
+      count: 0,
     }
   },
   //默认打开显示全部
@@ -52,13 +53,16 @@ export default {
   },
   computed:{
     ...mapGetters({
-      contentCount: 'getContentCount'
+      ctCount: 'getContentCount'
     })
   },
   methods:{
     ...mapActions({
       newContent: 'syncNewContentItem',
-      checkedAll:'syncCheckedContent'
+      checkedAll:'syncCheckedContent',
+      contentCount:'syncContentCount',
+      updateContent:'syncUpdateContent',
+      clearAll:'syncClearCompleted'
     }),
     resetStrValue(){
       this.strValue = '';
@@ -72,7 +76,48 @@ export default {
         this.countShow = false
       }
     },
+    getContentCount(){
+      this.contentCount
+      this.count = this.ctCount
+    },
+    editContent(that){
+      let currentNode = that.currentTarget
+      var nextCode = currentNode.nextElementSibling
+      var parentCode = currentNode.parentNode
+      nextCode.style.display = 'block'
+      parentCode.style.height = '7vh'
+      nextCode.focus()
+    },
+    editItem(that,index,isExpand){
+      let currentNode = that.currentTarget
+      var prevNode = currentNode.previousElementSibling
+      var parentCode = currentNode.parentNode
+      currentNode.style.display = 'none'
+      parentCode.style.height = 'auto'
+      this.updateContent({data:{content:currentNode.value,isExpand:isExpand},index:index})
+    },
+    clearCompletedShow(that,isExpand){
+      let currentNode = that.currentTarget
+      var nextCode = currentNode.nextElementSibling
+      console.log(currentNode)
+      console.log(nextCode)
+      if(currentNode.checked==true){
+        nextCode.style.textDecoration = 'line-through';
+        document.querySelector('.clear-completed').style.display = "block";
+      }else{
+        nextCode.style.textDecoration = "none";
+      }
+      let expand = this.$store.state.contentItem
+      /**expand.forEach(function(element) {
+        if(element.isExpand==false&&length==0){
+          document.querySelector('.clear-completed').style.display = "none";
+        }
+      }, this);
+      console.log(expend)*/
+      /**if(this.ctCount.isExpand==false){
 
+      }*/
+    },
   }
 }
 </script>
@@ -231,6 +276,7 @@ input::-webkit-input-placeholder{
 .list-item{
   word-break: break-all;
   word-wrap: break-word;
+  z-index: 0;
 }
 .remove-item{
   color:#cc9a9a;
@@ -241,6 +287,22 @@ input::-webkit-input-placeholder{
   position: absolute;
   left: 90%;
   top: 1.5vh;
+}
+.edit{
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.003);
+  position: relative;
+  margin: 0;
+  width: 25vw;
+  font-size: 24px;
+  line-height: 1.4em;
+  color: inherit;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  background: white;
+  border: 0px solid #ededed;
+  top: -5vh;
+  display: none;
 }
 </style>
 
