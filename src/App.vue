@@ -1,6 +1,5 @@
 <template>
   <div class="todoapp">
-
     <h1>{{ msg }}</h1>
     <!-- 1.文本框 -->
     <div class="todo-new">
@@ -11,7 +10,7 @@
     </div>
     <!-- 2.生成内容区 -->
     <div class="todo-main">
-        <router-view></router-view>
+        <router-view ref="all"></router-view>
     </div>
     <!-- 3.操作区 -->
     <div class="todo-operation" v-show="countShow">
@@ -21,7 +20,7 @@
           <li><router-link to="/active" >Active</router-link></li>
           <li><router-link to="/completed" >Completed</router-link></li>
       </ul>
-      <button class="clear-completed" v-show="clearShow" @click="">Clear completed</button>
+      <button class="clear-completed" v-show="clearShow">Clear completed</button>
     </div>
     <!-- 4.底部文案区 -->
     <div class="todo-info">
@@ -96,7 +95,7 @@ export default {
       parentCode.style.height = 'auto'
       this.updateContent({data:{content:currentNode.value,isExpand:isExpand},index:index})
     },
-    clearCompletedShow(that,isExpand){
+    clearCompletedShow(that){
       let currentNode = that.currentTarget
       var nextCode = currentNode.nextElementSibling
       console.log(currentNode)
@@ -106,18 +105,12 @@ export default {
         document.querySelector('.clear-completed').style.display = "block";
       }else{
         nextCode.style.textDecoration = "none";
+        document.querySelector('.clear-completed').style.display = "none";
       }
-      let expand = this.$store.state.contentItem
-      /**expand.forEach(function(element) {
-        if(element.isExpand==false&&length==0){
-          document.querySelector('.clear-completed').style.display = "none";
-        }
-      }, this);
-      console.log(expend)*/
-      /**if(this.ctCount.isExpand==false){
-
-      }*/
     },
+    allContent(){
+      this.$refs.all.allContent()
+    }
   }
 }
 </script>

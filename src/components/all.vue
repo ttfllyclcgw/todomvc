@@ -3,7 +3,7 @@
     <div class="todo-list" v-for="(item,index) in contentItem" :key="index" >
       <input type="checkbox" class="checked-item" :checked="item.isExpand"
                   v-on:click="item.isExpand=!item.isExpand" @click="getContentCount();
-                                                                    clearCompletedShow($event,item.isExpand)" />
+                                                                    clearCompletedShow($event)" />
       <label class="list-item" @dblclick="editContent($event)">{{item.content}}</label>
       <input class="edit" :value="item.content" @blur="editItem($event,index,item.isExpand)"  />
       <button class="remove-item" @click="removeTargetContent({content:item.content});
@@ -43,6 +43,15 @@ export default {
     },
     clearCompletedShow(that){
       this.$parent.clearCompletedShow(that)
+    },
+    allContent(){
+      this.contentItem.forEach(element => {
+        if(element.isExpand==true){
+          element.isExpand = false;
+        }else{
+          element.isExpand = true;
+        }
+      });
     }
   }
 }
